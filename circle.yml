@@ -3,7 +3,7 @@
 #
 general:
     artifacts:
-        - /home/ubuntu/com.metagalactic.dotprogressbar/app/build/outputs/apk/
+        - /home/ubuntu/com.metagalactic.sample/app/build/outputs/apk/
 
 machine:
     environment:

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DotProgressBar">
+        <attr name="dpb_noOfDots" format="integer"/>
+        <attr name="dpb_dotColor" format="color"/>
+        <attr name="dpb_dotRadius" format="dimension"/>
+        <attr name="dpb_growFactor" format="float"/>
+        <attr name="dpb_dotSpacing" format="dimension"/>
+    </declare-styleable>
+</resources>

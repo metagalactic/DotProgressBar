@@ -45,4 +45,9 @@ public class DotDrawable extends Drawable {
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
     }
+
+    public void setRadius(float radius) {
+        mRadius = radius;
+        invalidateSelf();
+    }
 }

@@ -1,20 +1,30 @@
 package com.metagalactic.dotprogressbar;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DotProgressBar extends View {
 
-    private List<DotDrawable> mDots;
+    private static final int DEFAULT_ANIMATION_DURATION = 250;
+    private static final float ANIMATION_DELAY_FACTOR = 0.3f;
+    private List<Drawable> mDots;
+    private AnimatorSet mAnimatorSet;
 
     @ColorInt
     private int mDotColor;
@@ -59,7 +69,9 @@ public class DotProgressBar extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         float dotSize = mDotRadius * 2;
-        float viewWidth = (dotSize * mNoOfDots) + (mDotSpacing * (mNoOfDots - 1));
+        float viewWidth = (dotSize * mNoOfDots)
+                + (mDotSpacing * (mNoOfDots - 1))
+                + (mDotRadius * (mGrowFactor - 1) * 2);
         setMeasuredDimension((int) viewWidth, (int) (dotSize * mGrowFactor));
     }
 
@@ -76,18 +88,23 @@ public class DotProgressBar extends View {
         adjustDotBounds();
     }
 
+    @Override
+    protected boolean verifyDrawable(Drawable who) {
+        return mDots.contains(who) || super.verifyDrawable(who);
+    }
+
     private void adjustDotBounds() {
         float dotSize = mDotRadius * 2;
         float maxDotSize = dotSize * mGrowFactor;
         float dotSizeWithSpace = dotSize + mDotSpacing;
 
-        int left = (int) (mDotRadius * (1 - mGrowFactor));
-        int right = left + (int) maxDotSize;
+        int left = (int) (mDotRadius * (mGrowFactor - 1));
         int top = 0;
+        int right = left + (int) dotSize;
         int bottom = (int) maxDotSize;
 
         for (int i = 0; i < mDots.size(); i++) {
-            DotDrawable dotDrawable = mDots.get(i);
+            Drawable dotDrawable = mDots.get(i);
             dotDrawable.setBounds(left, top, right, bottom);
 
             left += dotSizeWithSpace;
@@ -96,12 +113,33 @@ public class DotProgressBar extends View {
     }
 
     private void setupDots() {
+        mAnimatorSet = new AnimatorSet();
         mDots.clear();
+
+        List<Animator> animators = new ArrayList<>(mNoOfDots);
+        float growRadius = mDotRadius * mGrowFactor;
 
         for (int i = 0; i < mNoOfDots; i++) {
             DotDrawable dotDrawable = new DotDrawable(mDotColor, mDotRadius);
             dotDrawable.setCallback(this);
             mDots.add(dotDrawable);
+
+            ValueAnimator growAnimator = ObjectAnimator.ofFloat(dotDrawable,
+                    "radius", mDotRadius, growRadius, mDotRadius);
+            growAnimator.setDuration(DEFAULT_ANIMATION_DURATION);
+            growAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            growAnimator.setStartDelay((long) (i * DEFAULT_ANIMATION_DURATION * ANIMATION_DELAY_FACTOR));
+            animators.add(growAnimator);
         }
+
+        mAnimatorSet.playTogether(animators);
+        mAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mAnimatorSet.start();
+            }
+        });
+
+        mAnimatorSet.start();
     }
 }

@@ -6,5 +6,6 @@
         <attr name="dpb_dotRadius" format="dimension"/>
         <attr name="dpb_growFactor" format="float"/>
         <attr name="dpb_dotSpacing" format="dimension"/>
+        <attr name="dpb_animationDuration" format="integer"/>
     </declare-styleable>
 </resources>

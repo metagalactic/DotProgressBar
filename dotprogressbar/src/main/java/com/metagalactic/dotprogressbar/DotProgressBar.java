@@ -32,6 +32,7 @@ public class DotProgressBar extends View {
     private float mDotRadius;
     private float mDotSpacing;
     private float mGrowFactor;
+    private int mAnimationDuration;
 
     public DotProgressBar(Context context) {
         this(context, null);
@@ -56,6 +57,7 @@ public class DotProgressBar extends View {
             mDotRadius = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotRadius, 18);
             mGrowFactor = typedArray.getFloat(R.styleable.DotProgressBar_dpb_growFactor, 1.5f);
             mDotSpacing = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotSpacing, 8);
+            mAnimationDuration = typedArray.getInt(R.styleable.DotProgressBar_dpb_animationDuration, DEFAULT_ANIMATION_DURATION);
         } finally {
             typedArray.recycle();
         }
@@ -126,9 +128,9 @@ public class DotProgressBar extends View {
 
             ValueAnimator growAnimator = ObjectAnimator.ofFloat(dotDrawable,
                     "radius", mDotRadius, growRadius, mDotRadius);
-            growAnimator.setDuration(DEFAULT_ANIMATION_DURATION);
+            growAnimator.setDuration(mAnimationDuration);
             growAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            growAnimator.setStartDelay((long) (i * DEFAULT_ANIMATION_DURATION * ANIMATION_DELAY_FACTOR));
+            growAnimator.setStartDelay((long) (i * mAnimationDuration * ANIMATION_DELAY_FACTOR));
             animators.add(growAnimator);
         }
 

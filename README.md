@@ -12,4 +12,6 @@ Custom Dot progress bar.
 Join our online chat at [![Gitter](https://badges.gitter.im/metagalactic.svg)](https://gitter.im/metagalactic)
 
 --
+**Screen capture of the view:**
 
+<img src="https://github.com/metagalactic/DotProgressBar/blob/master/dotprogressbar.gif" width="250" />

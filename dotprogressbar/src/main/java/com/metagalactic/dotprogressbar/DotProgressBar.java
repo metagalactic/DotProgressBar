@@ -56,7 +56,7 @@ public class DotProgressBar extends View {
             mDotColor = typedArray.getColor(R.styleable.DotProgressBar_dpb_dotColor, Color.GRAY);
             mDotRadius = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotRadius, 18);
             mGrowFactor = typedArray.getFloat(R.styleable.DotProgressBar_dpb_growFactor, 1.5f);
-            mDotSpacing = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotSpacing, 8);
+            mDotSpacing = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotSpacing, 0);
             mAnimationDuration = typedArray.getInt(R.styleable.DotProgressBar_dpb_animationDuration, DEFAULT_ANIMATION_DURATION);
         } finally {
             typedArray.recycle();
@@ -70,11 +70,10 @@ public class DotProgressBar extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        float dotSize = mDotRadius * 2;
+        float dotSize = mDotRadius * mGrowFactor * 2;
         float viewWidth = (dotSize * mNoOfDots)
-                + (mDotSpacing * (mNoOfDots - 1))
-                + (mDotRadius * (mGrowFactor - 1) * 2);
-        setMeasuredDimension((int) viewWidth, (int) (dotSize * mGrowFactor));
+                + (mDotSpacing * (mNoOfDots - 1));
+        setMeasuredDimension((int) viewWidth, (int) (dotSize));
     }
 
     @Override
@@ -96,14 +95,13 @@ public class DotProgressBar extends View {
     }
 
     private void adjustDotBounds() {
-        float dotSize = mDotRadius * 2;
-        float maxDotSize = dotSize * mGrowFactor;
+        float dotSize = mDotRadius * mGrowFactor * 2;
         float dotSizeWithSpace = dotSize + mDotSpacing;
 
-        int left = (int) (mDotRadius * (mGrowFactor - 1));
+        int left = 0;
         int top = 0;
         int right = left + (int) dotSize;
-        int bottom = (int) maxDotSize;
+        int bottom = (int) dotSize;
 
         for (int i = 0; i < mDots.size(); i++) {
             Drawable dotDrawable = mDots.get(i);

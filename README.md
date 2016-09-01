@@ -1,6 +1,7 @@
 # DotProgressBar
 Custom Dot progress bar.
 
+[![Release](https://jitpack.io/v/metagalactic/DotProgressBar.svg)](https://jitpack.io/#metagalactic/DotProgressBar)
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 ![SDK](https://img.shields.io/badge/SDK-15%2B-green.svg)
 ![Release](https://img.shields.io/badge/release-v1.0.4-green.svg)
@@ -12,6 +13,29 @@ Custom Dot progress bar.
 Join our online chat at [![Gitter](https://badges.gitter.im/metagalactic.svg)](https://gitter.im/metagalactic)
 
 --
+
+## Install
+
+You can install using gradle:
+
+```
+	allprojects {
+		repositories {
+			...
+			maven { url "https://jitpack.io" }
+		}
+	}
+```
+
+```
+	dependencies {
+	        compile 'com.github.metagalactic:DotProgressBar:1.0.0'
+	}
+	
+```
+
+--
+
 **Screen capture of the view:**
 
 <img src="https://github.com/metagalactic/DotProgressBar/blob/master/dotprogressbar.gif" width="250" />

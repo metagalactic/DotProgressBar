@@ -90,6 +90,18 @@ public class DotProgressBar extends View {
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mAnimatorSet.start();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mAnimatorSet.cancel();
+    }
+
+    @Override
     protected boolean verifyDrawable(Drawable who) {
         return mDots.contains(who) || super.verifyDrawable(who);
     }
@@ -141,8 +153,6 @@ public class DotProgressBar extends View {
                 mAnimatorSet.start();
             }
         });
-
-        mAnimatorSet.start();
     }
 
     private ValueAnimator.AnimatorUpdateListener mAnimationListener = new ValueAnimator.AnimatorUpdateListener() {

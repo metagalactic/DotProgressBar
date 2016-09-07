@@ -56,24 +56,24 @@ public class DotProgressBar extends View {
             mDotColor = typedArray.getColor(R.styleable.DotProgressBar_dpb_dotColor, Color.GRAY);
             mDotRadius = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotRadius, 18);
             mGrowFactor = typedArray.getFloat(R.styleable.DotProgressBar_dpb_growFactor, 1.5f);
-            mDotSpacing = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotSpacing, 0);
+            mDotSpacing = typedArray.getDimension(R.styleable.DotProgressBar_dpb_dotSpacing, 8);
             mAnimationDuration = typedArray.getInt(R.styleable.DotProgressBar_dpb_animationDuration, DEFAULT_ANIMATION_DURATION);
         } finally {
             typedArray.recycle();
         }
 
         mDots = new ArrayList<>(mNoOfDots);
-
         setupDots();
         adjustDotBounds();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        float dotSize = mDotRadius * mGrowFactor * 2;
+        float dotSize = mDotRadius * 2;
         float viewWidth = (dotSize * mNoOfDots)
-                + (mDotSpacing * (mNoOfDots - 1));
-        setMeasuredDimension((int) viewWidth, (int) (dotSize));
+                + (mDotSpacing * (mNoOfDots - 1))
+                + (mDotRadius * (mGrowFactor - 1) * 2);
+        setMeasuredDimension((int) viewWidth, (int) (dotSize * mGrowFactor));
     }
 
     @Override
@@ -95,13 +95,14 @@ public class DotProgressBar extends View {
     }
 
     private void adjustDotBounds() {
-        float dotSize = mDotRadius * mGrowFactor * 2;
+        float dotSize = mDotRadius * 2;
+        float maxDotSize = dotSize * mGrowFactor;
         float dotSizeWithSpace = dotSize + mDotSpacing;
 
-        int left = 0;
+        int left = (int) (mDotRadius * (mGrowFactor - 1));
         int top = 0;
         int right = left + (int) dotSize;
-        int bottom = (int) dotSize;
+        int bottom = (int) maxDotSize;
 
         for (int i = 0; i < mDots.size(); i++) {
             Drawable dotDrawable = mDots.get(i);
@@ -129,6 +130,7 @@ public class DotProgressBar extends View {
             growAnimator.setDuration(mAnimationDuration);
             growAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
             growAnimator.setStartDelay((long) (i * mAnimationDuration * ANIMATION_DELAY_FACTOR));
+            growAnimator.addUpdateListener(mAnimationListener);
             animators.add(growAnimator);
         }
 
@@ -142,4 +144,11 @@ public class DotProgressBar extends View {
 
         mAnimatorSet.start();
     }
+
+    private ValueAnimator.AnimatorUpdateListener mAnimationListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            invalidate();
+        }
+    };
 }

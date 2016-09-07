@@ -4,7 +4,7 @@ Custom Dot progress bar.
 [![Release](https://jitpack.io/v/metagalactic/DotProgressBar.svg)](https://jitpack.io/#metagalactic/DotProgressBar)
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 ![SDK](https://img.shields.io/badge/SDK-15%2B-green.svg)
-![Release](https://img.shields.io/badge/release-1.0.0-green.svg)
+![Release](https://img.shields.io/badge/release-1.0.3-green.svg)
 [![Build Status](https://travis-ci.org/metagalactic/DotProgressBar.svg?branch=master)](https://travis-ci.org/metagalactic/DotProgressBar)
 [![CircleCI](https://circleci.com/gh/metagalactic/DotProgressBar.svg?style=svg)](https://circleci.com/gh/metagalactic/DotProgressBar)
 

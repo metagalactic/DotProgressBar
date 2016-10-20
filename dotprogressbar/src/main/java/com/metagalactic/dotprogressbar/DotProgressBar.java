@@ -73,7 +73,6 @@ public class DotProgressBar extends View {
         adjustDotBounds();
     }
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         float dotSize = mDotRadius * 2;

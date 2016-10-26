@@ -24,7 +24,9 @@ public class DotProgressBar extends View {
     private static final int DEFAULT_ANIMATION_DURATION = 250;
     private static final float ANIMATION_DELAY_FACTOR = 0.3f;
     private List<Drawable> mDots;
+    private List<Animator> mAnimators;
     private AnimatorSet mAnimatorSet;
+    private ValueAnimator.AnimatorUpdateListener mAnimationListener;
 
     @ColorInt
     private int mDotColor;
@@ -63,7 +65,11 @@ public class DotProgressBar extends View {
         }
 
         mDots = new ArrayList<>(mNoOfDots);
-        setupDots();
+        for (int i = 0; i < mNoOfDots; i++) {
+            DotDrawable dotDrawable = new DotDrawable(mDotColor, mDotRadius);
+            dotDrawable.setCallback(this);
+            mDots.add(dotDrawable);
+        }
         adjustDotBounds();
     }
 
@@ -92,13 +98,13 @@ public class DotProgressBar extends View {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mAnimatorSet.start();
+        createAnimation();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mAnimatorSet.cancel();
+        tearDownAnimation();
     }
 
     @Override
@@ -125,40 +131,42 @@ public class DotProgressBar extends View {
         }
     }
 
-    private void setupDots() {
+    private void createAnimation() {
         mAnimatorSet = new AnimatorSet();
-        mDots.clear();
-
-        List<Animator> animators = new ArrayList<>(mNoOfDots);
+        mAnimators = new ArrayList<>(mNoOfDots);
+        mAnimationListener = new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+            }
+        };
         float growRadius = mDotRadius * mGrowFactor;
-
         for (int i = 0; i < mNoOfDots; i++) {
-            DotDrawable dotDrawable = new DotDrawable(mDotColor, mDotRadius);
-            dotDrawable.setCallback(this);
-            mDots.add(dotDrawable);
-
-            ValueAnimator growAnimator = ObjectAnimator.ofFloat(dotDrawable,
+            ValueAnimator growAnimator = ObjectAnimator.ofFloat(mDots.get(i),
                     "radius", mDotRadius, growRadius, mDotRadius);
             growAnimator.setDuration(mAnimationDuration);
             growAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
             growAnimator.setStartDelay((long) (i * mAnimationDuration * ANIMATION_DELAY_FACTOR));
             growAnimator.addUpdateListener(mAnimationListener);
-            animators.add(growAnimator);
+            mAnimators.add(growAnimator);
         }
-
-        mAnimatorSet.playTogether(animators);
+        mAnimatorSet.playTogether(mAnimators);
         mAnimatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mAnimatorSet.start();
             }
         });
+        mAnimatorSet.start();
     }
 
-    private ValueAnimator.AnimatorUpdateListener mAnimationListener = new ValueAnimator.AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            invalidate();
+    private void tearDownAnimation() {
+        for (Animator animator : mAnimators) {
+            animator.removeAllListeners();
         }
-    };
+        mAnimators.clear();
+        mAnimatorSet.removeAllListeners();
+        mAnimatorSet.cancel();
+        mAnimationListener = null;
+    }
 }

@@ -29,7 +29,7 @@ You can install using gradle:
 
 ```
 	dependencies {
-	        compile 'com.github.metagalactic:DotProgressBar:1.0.3'
+	        compile 'com.github.metagalactic:DotProgressBar:1.0.4'
 	}
 	
 ```
